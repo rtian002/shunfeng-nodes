@@ -1,0 +1,28 @@
+name: SyncToABC
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 8 1 9 *'  # 每周UTC 8:00（北京时间16:00）
+
+
+jobs:
+  execute:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+      - name: Run Script
+        run: |
+          pip install -r requirements.txt 
+          python main.py 
+
+      - name: Commit changes
+        run: |
+          git config --global user.name  "rtian002"
+          git config --global user.email  "rtian002@gmail.com" 
+          git add nodelist.txt
+          git commit -m "Auto-commit by GitHub Actions"
+          git push origin HEAD:main --force 
