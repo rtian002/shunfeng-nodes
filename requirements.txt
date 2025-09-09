@@ -1,5 +1,4 @@
 # 核心依赖 
-requests
 beautifulsoup4
  
 # 解析器（至少安装一个）
