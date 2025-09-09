@@ -16,7 +16,8 @@ def get_url(filename):
         #获取href属性
         if filename.endswith('2.html'):
             url = title.text.strip().split(' ')[-1]
-            urlretrieve(url,os.path.join(_path,'nodefile.txt'))
+            # urlretrieve(url,os.path.join(_path,'nodefile.txt'))
+            urlretrieve(url,'nodefile.txt')
         else:
             url = title.attrs['href']
     return url
@@ -27,6 +28,7 @@ if __name__ == '__main__':
         filename = sys.argv[1]
     else:
         filename = 'shunfeng1.html'
-    filename = os.path.join(_path, filename)
+    # filename = os.path.join(_path, filename)
     url = get_url(filename)
     print(url)
+
