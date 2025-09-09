@@ -1,32 +1,32 @@
-import requests
-from urllib.parse import urlparse
+from bs4 import BeautifulSoup
 from urllib.request import urlretrieve
 
-import random
-from bs4 import BeautifulSoup
-
-
-def main():
-    url1='https://skill-note.blogspot.com/search/label/Blogger'
-    html1=requests.get(url1)
-    if html1.status_code==200:
-        print('获取页面成功')
-        html1=html1.text
-        soup1=BeautifulSoup(html1,'html.parser')
-        item1=soup1.select('div.post-0 a')
-        url2=item1[0].attrs['href']
-        # url2='https://skill-note.blogspot.com/2023/06/bloggerfloat_67.html'
-        print('获取链接',url2)
-        html2=get_pagecontent(url2)
-        soup2=BeautifulSoup(html2,'html.parser')
-        item2=soup2.select('ul.headline2>li[style]')
-        url3=item2[0].text.split(' ')[-2]
-        print('获取节点文件',url3)
-        nodefile='nodeslist-1.txt'
-        urlretrieve(url3,nodefile)
-        print('节点文件下载完成')
+import os
+#获取当前脚本所在目录
+_path = os.path.dirname(os.path.abspath(__file__))
+def get_url(filename):
+    if filename.endswith('1.html'):
+        css='h2.post-title>a'
     else:
-        print('获取页面失败')
+        css='ul.headline2>li[style]'
+    with open(filename, 'r', encoding='utf-8') as f:
+        html = f.read()
+        soup = BeautifulSoup(html, 'html.parser')
+        title = soup.select_one(css)
+        #获取href属性
+        if filename.endswith('2.html'):
+            url = title.text.strip().split(' ')[-1]
+            urlretrieve(url,os.path.join(_path,'nodefile.txt'))
+        else:
+            url = title.attrs['href']
+    return url
 if __name__ == '__main__':
-    main()
-
+    # 获取命令行参数
+    import sys
+    if len(sys.argv)>1:
+        filename = sys.argv[1]
+    else:
+        filename = 'shunfeng1.html'
+    filename = os.path.join(_path, filename)
+    url = get_url(filename)
+    print(url)
